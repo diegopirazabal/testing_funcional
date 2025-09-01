@@ -91,3 +91,7 @@ export async function verifyLoggedInAndDelete(page, username) {
   await expect(page.getByText('Account Deleted!', { exact: false })).toBeVisible();
   await page.getByTestId('continue-button').click();
 }
+
+export async function verifyError(page) {
+  await expect(page.getByText(`Your email or password is incorrect!`)).toBeVisible();
+}
