@@ -29,6 +29,27 @@ export async function signup(page, user) {
   await page.getByRole('button', { name: 'Signup' }).click();
 }
 
+export async function logout(page, user) {
+  await page.getByRole('link', { name: 'Logout' }).click();
+}
+
+
+export async function signin(page, user) {
+  await page.getByRole('link', { name: /signup \/ login/i }).click();
+  await expect(page.getByText('Login to your account')).toBeVisible();
+  await page.getByTestId('login-email').fill(user.email);
+  await page.getByTestId('login-password').fill(user.password);
+  await page.getByRole('button', { name: 'Login' }).click();
+}
+
+export async function wrongSignIn(page, user) {
+  await page.getByRole('link', { name: /signup \/ login/i }).click();
+  await expect(page.getByText('Login to your account')).toBeVisible();
+  await page.getByRole('textbox', { name: 'email' }).fill("error@mail.com");
+  await page.getByTestId('login-password').fill("error123");
+  await page.getByRole('button', { name: 'Login' }).click();
+}
+
 export async function completeAccountDetails(page, user) {
   await expect(page.getByText('Enter Account Information', { exact: false })).toBeVisible();
   await page.locator('#id_gender1').check();
@@ -49,6 +70,14 @@ export async function completeAccountDetails(page, user) {
   await page.getByTestId('zipcode').fill(user.cod_postal);
   await page.getByTestId('mobile_number').fill(user.telefono);
   await page.getByTestId('create-account').click();
+}
+
+export async function loginRightAccountDetails(page, user) {
+
+}
+
+export async function loginWrongAccountDetails(page, user) {
+
 }
 
 export async function verifyAccountAndContinue(page) {
