@@ -45,7 +45,7 @@ export async function signin(page, user) {
 export async function wrongSignIn(page, user) {
   await page.getByRole('link', { name: /signup \/ login/i }).click();
   await expect(page.getByText('Login to your account')).toBeVisible();
-  await page.getByRole('textbox', { name: 'email' }).fill("error@mail.com");
+  await page.getByTestId('login-email').fill("error@mail.com");
   await page.getByTestId('login-password').fill("error123");
   await page.getByRole('button', { name: 'Login' }).click();
 }
