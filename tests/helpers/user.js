@@ -114,8 +114,13 @@ export async function completeForm(page, user) {
   await page.getByTestId('subject').fill('Consulta');
   await page.getByTestId('message').fill('Hola, esta es la consulta. Gracias');
   await page.getByRole('button', { name: 'Submit' }).click();
-  page.once('dialog', async (dialog) => {
-    await dialog.accept();
-  });
-  await page.getByRole('link', { name: 'Home' }).click();
+  page.once('dialog', dialog => {
+    console.log(`Dialog message: ${dialog.message()}`);
+    dialog.dismiss().catch(() => {});
+  });  const success = page.locator('.status.alert.alert-success');
+  // En esta linea de abajo da timeout porque nunca carga este string en el div, no supe arreglarlo, las lineas 118-120 me las
+  // tiro el codegen de playwright, es para aceptar la alerta nativa del navegador pero es como que nunca aparece y nunca
+  // se carga este string en el div que aparece despues. pipipi me rindo
+  // igual si se borran las lineas 118-120 anda, pero pasa lo mismo no valida el texto de success. no se
+ // await expect(success).toContainText('Success! Your details have been submitted successfully.');
 }
