@@ -95,3 +95,27 @@ export async function verifyLoggedInAndDelete(page, username) {
 export async function verifyError(page) {
   await expect(page.getByText(`Your email or password is incorrect!`)).toBeVisible();
 }
+
+export async function verifyEmailError(page) {
+  await expect(page.getByText(`Email Address already exist!`)).toBeVisible();
+}
+
+export async function contactUs(page){
+  await page.getByRole('link', { name: /contact us/i }).click();
+}
+
+export async function verifyContactUs(page){
+  await expect(page.getByText(`Get In Touch`)).toBeVisible();
+}
+
+export async function completeForm(page, user) {
+  await page.getByTestId('name').fill(user.nick);
+  await page.getByTestId('email').fill(user.email);
+  await page.getByTestId('subject').fill('Consulta');
+  await page.getByTestId('message').fill('Hola, esta es la consulta. Gracias');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  page.once('dialog', async (dialog) => {
+    await dialog.accept();
+  });
+  await page.getByRole('link', { name: 'Home' }).click();
+}
