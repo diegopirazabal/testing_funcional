@@ -1,7 +1,7 @@
 import { generateUser, signup, completeAccountDetails, verifyAccountAndContinue, verifyLoggedInAndDelete } from './helpers/user.js';
 import { test, expect } from '@playwright/test';
-test('register, login and delete user', async ({ page }) => {
-  await page.goto('http://automationexercise.com');
+test('test-case-1 (Register User)', async ({ page }) => {
+  await page.goto('/');
 
   await expect(page.locator('body')).toBeVisible();
 

@@ -1,22 +1,18 @@
-import {test, expect} from '@playwright/test';
-import {
-    completeAccountDetails,
-    generateUser, logout, signin, signup,
-    verifyAccountAndContinue, verifyError
-} from "./helpers/user";
+import { test, expect } from '@playwright/test';
+import { generateUser, signup, completeAccountDetails, verifyAccountAndContinue, logout } from './helpers/user.js';
 
-test('test-case-3', async ({page}) => {
-    await page.goto('http://automationexercise.com');
-
-    await expect(page.locator('body')).toBeVisible();
+test('test-case-4 (Logout user)', async ({ page }) => {
+    await page.goto('/');
 
     const user = generateUser();
 
-    await signin(page, user);
+    await signup(page, user);
 
-    await logout(page, user);
+    await completeAccountDetails(page, user);
+
+    await verifyAccountAndContinue(page);
+
+    await logout(page);
 
     await expect(page.getByText('Login to your account')).toBeVisible();
-
-    await page.close();
 });

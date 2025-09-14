@@ -6,8 +6,8 @@ import {
     verifyLoggedInAndDelete
 } from "./helpers/user";
 
-test('test-case-2', async ({page}) => {
-    await page.goto('http://automationexercise.com');
+test('test-case-2 (Login User with correct email and password)', async ({page}) => {
+    await page.goto('/');
 
     await expect(page.locator('body')).toBeVisible();
 
