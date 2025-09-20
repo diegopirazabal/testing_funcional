@@ -1,11 +1,13 @@
-// tests/helpers/user.js
-import { expect } from '@playwright/test';
+import { test, expect} from '@playwright/test';
 
+const HOME_URL = /automationexercise\.com\/?$/;
+
+/** Generar usuario **/
 export function generateUser() {
   const salt = `${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
   return {
-    nick: 'Carlitoooos',
-    email: `carlitos+${salt}@mailinator.com`, // genera un mail único cada vex que se haga un test
+    nick: 'Carlitos',
+    email: `carlitos+${salt}@mailinator.com`, // genera un mail único cada vez que se haga un test
     password: '1234',
     dia: '10',
     mes: 'October',   // usamos label para evitar desajustes de value
@@ -15,16 +17,19 @@ export function generateUser() {
     direccion: 'Calle Falsa 123',
     direccion_2: 'Piso 1',
     empresa: 'Coca-Cola',
-    estado: 'Lima',
+    estado: 'Ontario',
     pais: 'Canada',
-    ciudad: 'Cochabamba',
-    cod_postal: '12345',
+    ciudad: 'Toronto',
+    cod_postal: 'A1A 1A1',
     telefono: '123456789'
   };
 }
 
 export async function signup(page, user) {
-  await page.getByRole('link', { name: /signup \/ login/i }).click();
+  const signupLogin = page.getByRole('link', { name: /signup \/ login/i });
+  await expect(signupLogin).toBeVisible();
+  await signupLogin.click();
+
   await expect(page.getByText('New User Signup!')).toBeVisible();
   await page.getByRole('textbox', { name: 'Name' }).fill(user.nick);
   await page.getByTestId('signup-email').fill(user.email);
@@ -32,12 +37,17 @@ export async function signup(page, user) {
 }
 
 export async function logout(page) {
-  await page.getByRole('link', { name: 'Logout' }).click();
+  const logoutLink = page.getByRole('link', { name: 'Logout' });
+  await expect(logoutLink).toBeVisible();
+  await logoutLink.click();
   await expect(page.getByText('Login to your account')).toBeVisible();
 }
 
 export async function signin(page, user) {
-  await page.getByRole('link', { name: /signup \/ login/i }).click();
+  const signupLogin = page.getByRole('link', { name: /signup \/ login/i });
+  await expect(signupLogin).toBeVisible();
+  await signupLogin.click();
+
   await expect(page.getByText('Login to your account')).toBeVisible();
   await page.getByTestId('login-email').fill(user.email);
   await page.getByTestId('login-password').fill(user.password);
@@ -45,7 +55,10 @@ export async function signin(page, user) {
 }
 
 export async function wrongSignIn(page) {
-  await page.getByRole('link', { name: /signup \/ login/i }).click();
+  const signupLogin = page.getByRole('link', { name: /signup \/ login/i });
+  await expect(signupLogin).toBeVisible();
+  await signupLogin.click();
+
   await expect(page.getByText('Login to your account')).toBeVisible();
   await page.getByTestId('login-email').fill('error@mail.com');
   await page.getByTestId('login-password').fill('error123');
@@ -54,14 +67,19 @@ export async function wrongSignIn(page) {
 
 export async function completeAccountDetails(page, user) {
   await expect(page.getByText('Enter Account Information')).toBeVisible();
-  await page.locator('#id_gender1').check();
+
+  const gender = page.locator('#id_gender1');
+  await expect(gender).toBeVisible();
+  await gender.check();
+
   await page.getByTestId('password').fill(user.password);
-  // por label para evitar valores raros
   await page.getByTestId('days').selectOption({ label: user.dia });
   await page.getByTestId('months').selectOption({ label: user.mes });
   await page.getByTestId('years').selectOption({ label: user.anio });
+
   await page.getByLabel('Sign up for our newsletter!').check();
   await page.getByLabel('Receive special offers from our partners!').check();
+
   await page.getByTestId('first_name').fill(user.nombre);
   await page.getByTestId('last_name').fill(user.apellido);
   await page.getByTestId('company').fill(user.empresa);
@@ -72,22 +90,32 @@ export async function completeAccountDetails(page, user) {
   await page.getByTestId('city').fill(user.ciudad);
   await page.getByTestId('zipcode').fill(user.cod_postal);
   await page.getByTestId('mobile_number').fill(user.telefono);
-  await page.getByTestId('create-account').click();
+
+  const createBtn = page.getByTestId('create-account');
+  await expect(createBtn).toBeVisible();
+  await createBtn.click();
 }
 
 export async function verifyAccountAndContinue(page) {
   await expect(page.getByText('Account Created!')).toBeVisible();
-  await page.getByTestId('continue-button').click();
-  // a veces mete overlay/ads entonces a espera
-  await expect(page).toHaveURL(/automationexercise\.com\/?$/);
+  const cont = page.getByTestId('continue-button');
+  await expect(cont).toBeVisible();
+  await cont.click();
+  await expect(page).toHaveURL(HOME_URL);
 }
 
 export async function verifyLoggedInAndDelete(page, username) {
   await expect(page.getByText(`Logged in as ${username}`)).toBeVisible({ timeout: 10_000 });
-  await page.getByRole('link', { name: /delete account/i }).click();
+
+  const del = page.getByRole('link', { name: /delete account/i });
+  await expect(del).toBeVisible();
+  await del.click();
+
   await expect(page.getByText('Account Deleted!')).toBeVisible();
-  await page.getByTestId('continue-button').click();
-  await expect(page).toHaveURL(/automationexercise\.com\/?$/);
+  const cont = page.getByTestId('continue-button');
+  await expect(cont).toBeVisible();
+  await cont.click();
+  await expect(page).toHaveURL(HOME_URL);
 }
 
 export async function verifyError(page) {
@@ -99,7 +127,9 @@ export async function verifyEmailError(page) {
 }
 
 export async function contactUs(page){
-  await page.getByRole('link', { name: /contact us/i }).click();
+  const contact = page.getByRole('link', { name: /contact us/i });
+  await expect(contact).toBeVisible();
+  await contact.click();
 }
 
 export async function verifyContactUs(page){
@@ -111,39 +141,36 @@ export async function completeForm(page, user) {
   await page.getByTestId('email').fill(user.email);
   await page.getByTestId('subject').fill('Consulta');
   await page.getByTestId('message').fill('Hola, esta es la consulta. Gracias');
-
-  // opcional. subir un archivo de prueba
-  // crear archivo en tests/fixtures/prueba.txt
- // const upload = page.locator('input[name="upload_file"]');
-  //if (await upload.count()) {
-   // await upload.setInputFiles('tests/fixtures/prueba.txt');
- // }
-
   const success = page.locator('.status.alert.alert-success');
-  //  alert antes del clic
   page.once('dialog', async dialog => { await dialog.accept(); });
-  await page.getByRole('button', { name: 'Submit' }).click();
+  const submit = page.getByRole('button', { name: 'Submit' });
+  await expect(submit).toBeEnabled();
+  await submit.click();
   await expect(success).toHaveText('Success! Your details have been submitted successfully.');
-  await page.getByRole('link', { name: /Home/ }).last().click(); // ordenado por indice para que cliquee el correcto
-  await expect(page).toHaveURL(/automationexercise\.com\/?$/);
+  const homeBtn = page.locator('a.btn.btn-success[href="/"]').first();
+  await expect(homeBtn).toBeVisible();
+  await homeBtn.click();
+  await expect(page).toHaveURL(HOME_URL);
 }
 
 export async function openTestCases(page) {
-  await page.locator('a[href="/test_cases"]').first().click();
-  await page.waitForURL(/\/test_cases\/?$/);
+  const link = page.locator('a[href="/test_cases"]').first();
+  await expect(link).toBeVisible();
+  await link.click();
+  await expect(page).toHaveURL(/\/test_cases\/?$/);
 }
 
 export async function verifyTestCases(page) {
   await expect(page).toHaveURL(/\/test_cases/);
   const title = page.locator('h2', { hasText: 'Test Cases' });
   await expect(title).toBeVisible();
-  // check extra
- // await expect(page.getByText('Test Case 1')).toBeVisible();
 }
 
 export async function openProducts(page) {
-  await page.locator('a[href="/products"]').first().click();
-  await page.waitForURL(/\/products\/?$/);
+  const link = page.locator('a[href="/products"]').first();
+  await expect(link).toBeVisible();
+  await link.click();
+  await expect(page).toHaveURL(/\/products\/?$/);
 }
 
 export async function verifyProductsList(page) {
@@ -157,7 +184,9 @@ export async function verifyProductsList(page) {
 }
 
 export async function openFirstProductDetail(page) {
-  await page.locator('.nav.nav-pills.nav-justified > li > a').first().click();
+  const first = page.locator('.nav.nav-pills.nav-justified > li > a').first();
+  await expect(first).toBeVisible();
+  await first.click();
   await expect(page).toHaveURL(/\/product_details\//);
 }
 
@@ -173,9 +202,12 @@ export async function verifyProductDetailPage(page) {
 }
 
 export async function searchProducts(page, search) {
-  await expect(page.locator('#search_product')).toBeVisible();
-  await page.fill('#search_product', search);
-  await page.click('#submit_search');
+  const input = page.locator('#search_product');
+  await expect(input).toBeVisible();
+  await input.fill(search);
+  const submit = page.locator('#submit_search');
+  await expect(submit).toBeVisible();
+  await submit.click();
   await expect(page.getByRole('heading', { name: /Searched Products/i })).toBeVisible();
 }
 
@@ -183,6 +215,110 @@ export async function verifySearchResults(page, { expectName } = {}) {
   const resultsGrid = page.locator('.features_items .product-image-wrapper');
   await expect(resultsGrid.first()).toBeVisible();
   if (expectName) {
-    await expect(page.locator('.features_items .productinfo p', { hasText: expectName })).toBeVisible();
+    const name = page.locator('.features_items .productinfo p', { hasText: expectName });
+    await expect(name).toBeVisible();
   }
 }
+
+export async function verifySubscription(page){
+  await page.locator('footer').scrollIntoViewIfNeeded();
+  const sub = page.locator('div h2').filter({ hasText: /^subscription$/i });
+  await expect(sub).toBeVisible();
+  const email = page.locator('#subscribe_email, #susbscribe_email');
+  await expect(email).toBeVisible({ timeout: 5000 });
+  await email.fill('subscription@email.com');
+  const btn = page.locator('#subscribe');
+  await expect(btn).toBeVisible();
+  await btn.click();
+  const successMsg = page.getByText(/you have been successfully subscribed!/i);
+  await expect(successMsg).toBeVisible({ timeout: 5000 });
+}
+
+export async function verifySubscriptionInCart(page){
+  const carrito = page.locator('a[href="/view_cart"]').first();
+  await expect(carrito).toBeVisible();
+  await carrito.click();
+  await expect(page).toHaveURL(/\/view_cart\/?$/);
+  await verifySubscription(page);
+}
+
+export async function addProductToCart(page, index, { goToCart = false } = {}) {
+  const products = page.locator('a[href="/products"]').first();
+  await expect(products).toBeVisible();
+  await products.click();
+  const grid = page.locator('.features_items');
+  await grid.waitFor();
+  const card = grid.locator('.product-image-wrapper').nth(index);
+  await card.scrollIntoViewIfNeeded();
+  await expect(card).toBeVisible();
+  await card.hover();
+  const addBtn = card.locator(':is(.overlay-content a, a):has-text("Add to cart")').first();
+  await addBtn.waitFor({ state: 'visible' });
+  await addBtn.click();
+  const modal = page.locator('#cartModal');
+  await modal.waitFor({ state: 'visible' });
+  if (goToCart) {
+    const viewCart = page.getByRole('link', { name: /view cart/i });
+    await expect(viewCart).toBeVisible();
+    await viewCart.click();
+    await expect(page).toHaveURL(/\/view_cart\/?$/);
+  } else {
+    const continueBtn = page.getByRole('button', { name: /continue shopping/i });
+    await expect(continueBtn).toBeVisible();
+    await continueBtn.click();
+    await modal.waitFor({ state: 'hidden' });
+  }
+}
+
+export async function verifyProducts(page) {
+  await expect(page).toHaveURL(/\/view_cart\/?$/);
+  const rows   = page.locator('#cart_info_table tbody tr:has(td.cart_description)');
+  await expect(rows).toHaveCount(2);
+  const prices = rows.locator('td.cart_price p');
+  const qtys = rows.locator('td.cart_quantity');
+  const totals = rows.locator('td.cart_total p.cart_total_price');
+  await expect(prices).toHaveCount(2);
+  await expect(qtys).toHaveCount(2);
+  await expect(totals).toHaveCount(2);
+  await expect(prices).toHaveText([/Rs\.\s*\d+/, /Rs\.\s*\d+/]);
+  await expect(qtys).toContainText(['1', '1']);
+  await expect(totals).toHaveText([/Rs\.\s*\d+/, /Rs\.\s*\d+/]);
+}
+
+export async function viewProductDetails(page){
+    const card = page.locator('.features_items .product-image-wrapper').first();
+    await card.scrollIntoViewIfNeeded();
+    await expect(card).toBeVisible();
+    const viewProduct = card.locator('a[href^="/product_details/"]');
+    await expect(viewProduct.first()).toBeVisible();
+    await viewProduct.first().click();
+    await expect(page).toHaveURL(/\/product_details\/\d+/);
+    await expect(page.locator('.product-information')).toBeVisible();
+  }
+
+export async function addFourItems(page, qty) {
+    const qtyInput = page.locator('#quantity');
+    await expect(qtyInput).toBeVisible();
+    await qtyInput.click();
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.press('Delete');
+    await page.locator('#quantity').fill(String(qty));
+    const addBtn = page.getByRole('button', { name: /add to cart/i });
+    await expect(addBtn).toBeVisible();
+    await addBtn.click();
+    const modal = page.locator('#cartModal');
+    await expect(modal).toBeVisible({ timeout: 5000 });
+    const viewCart = modal.getByRole('link', { name: /view cart/i });
+    await expect(viewCart).toBeVisible();
+    await viewCart.click();
+    await expect(page).toHaveURL(/\/view_cart\/?$/);
+}
+
+export async function verifyCartQuantity(page, qty) {
+  const row = page.locator('#cart_info_table tbody tr:has(td.cart_description)').first();
+  await expect(row).toBeVisible();
+  const qtyCell = row.locator('td.cart_quantity');
+  await expect(qtyCell).toContainText(new RegExp(`\\b${qty}\\b`));
+}
+
+
