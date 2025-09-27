@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import {addProductToCart, verifyProducts} from "./helpers/user";
 
-test('test-case-12', async ({page}) => {
+test('test-case-12 (Add products in cart=', async ({page}) => {
     await page.goto('/');
     await expect(page.locator('body')).toBeVisible();
     await addProductToCart(page, 0, { goToCart: false });
