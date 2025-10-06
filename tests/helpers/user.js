@@ -259,7 +259,7 @@ export async function addProductToCart(page, index, { goToCart = false } = {}) {
   await modal.waitFor({ state: 'visible' });
   if (goToCart) {
     const viewCart = page.getByRole('link', { name: /view cart/i });
-    await expect(viewCart).toBeVisible();
+    await expect(viewCart).toBeVisible(); // verifica que la pagina sea visible
     await viewCart.click();
     await expect(page).toHaveURL(/\/view_cart\/?$/);
   } else {
@@ -269,6 +269,36 @@ export async function addProductToCart(page, index, { goToCart = false } = {}) {
     await modal.waitFor({ state: 'hidden' });
   }
 }
+
+// ya hay que estar en /view_cart y debe de haber por lo menos un articulo en el carrito
+export async function removeFirstProduct(page) {
+  await expect(page).toHaveURL(/\/view_cart\/?/); // opcional
+  const rows = page.locator('#cart_info_table tbody tr');
+  // cuenta las filas
+  const beforeCount = await rows.count();
+  expect(beforeCount).toBeGreaterThan(0);
+  // primer filla
+  const firstRow = rows.first();
+  // cliquea en la X
+  const deleteBtn = firstRow.locator('.cart_quantity_delete');
+  await expect(deleteBtn).toBeVisible();
+  await deleteBtn.click();
+  // baja el numero de filas
+  await expect
+      .poll(() => rows.count())
+      .toBeLessThan(beforeCount);
+  if (beforeCount > 1) {
+    await expect(rows).toHaveCount(beforeCount - 1);
+  } else {
+    // si era el último, algunos sitios muestran mensaje de carrito vacío
+    const emptyMsg = page.getByText(/cart is empty/i);
+    if (await emptyMsg.isVisible().catch(() => false)) {
+      await expect(emptyMsg).toBeVisible();
+    }
+  }
+}
+
+
 
 export async function verifyProducts(page) {
   await expect(page).toHaveURL(/\/view_cart\/?$/);
@@ -400,4 +430,47 @@ export async function fillPaymentAndConfirm(page, payment) {
 export async function verifyOrderSuccess(page) {
   const success = page.getByText(/Congratulations! Your order has been confirmed!/i);
   await expect(success).toBeVisible({ timeout: 10_000 });
+}
+
+// entra a las categorias dress y jeans
+export async function checkCategories(page) {
+  const sideBar = page.locator('.left-sidebar');
+  await sideBar.scrollIntoViewIfNeeded();
+  await expect(sideBar).toBeVisible();
+  await expect(sideBar).toContainText('Category');
+  const women = sideBar.locator('a[href="#Women"]').first();
+  await expect(women).toBeVisible();
+  await women.click();
+  const dress = sideBar.locator('a[href="/category_products/1"]').first();
+  await expect(dress).toBeVisible();
+  await dress.click();
+  const header = page.locator('.title.text-center');
+  await expect(header).toHaveText('Women - Dress Products');
+
+  await expect(sideBar).toContainText('Category');
+  const men = sideBar.locator('a[href="#Men"]').first();
+  await expect(men).toBeVisible();
+  await men.click();
+  const jeans = sideBar.locator('a[href="/category_products/6"]').first();
+  await expect(jeans).toBeVisible();
+  await jeans.click();
+  const header2 = page.locator('.title.text-center');
+  await expect(header2).toHaveText('Men - Jeans Products');
+}
+
+export async function checkBrands(page) {
+  const sideBar = page.locator('.left-sidebar');
+  await sideBar.scrollIntoViewIfNeeded();
+  await expect(sideBar).toBeVisible();
+  await expect(sideBar).toContainText('Brands');
+  const catPOLO = sideBar.locator('a[href="/brand_products/Polo"]').first();
+  await expect(catPOLO).toBeVisible();
+  await catPOLO.click();
+  await expect(page).toHaveURL(new RegExp(`/brand_products/Polo`, 'i'));
+  const header = page.locator('.features_items h2.title.text-center');
+  await expect(header).toHaveText(`Brand - Polo Products`);
+  const cards = page.locator('.features_items .product-image-wrapper');
+  // verifica que hayan productos
+  const n = await cards.count();
+  expect(n).toBeGreaterThan(0);
 }
