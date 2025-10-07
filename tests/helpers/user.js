@@ -474,3 +474,19 @@ export async function checkBrands(page) {
   const n = await cards.count();
   expect(n).toBeGreaterThan(0);
 }
+
+export async function scrollToRecommended(page) {
+  const rec = page.locator('a:has-text("Recommended items")').first();
+  await expect(rec).toBeVisible();
+  await rec.scrollIntoViewIfNeeded();
+}
+
+export async function addRecommendedToCart(page) {
+  scrollToRecommended(page);
+  await page.locator('a:has-text("Recommended items")').click();
+  const first = page.locator('div[class="productinfo text-center"] >> text=Add to cart').first();
+  await expect(first).toBeVisible();
+  await first.click();
+  await expect(page.locator('#cartModal')).toBeVisible();
+  await page.locator('button:has-text("Continue Shopping")').click();
+}
