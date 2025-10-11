@@ -490,3 +490,15 @@ export async function addRecommendedToCart(page) {
   await expect(page.locator('#cartModal')).toBeVisible();
   await page.locator('button:has-text("Continue Shopping")').click();
 }
+
+export async function addProductReview(page, { name, email, review }) {
+  await expect(page.getByText(/write your review/i)).toBeVisible();
+  await page.locator('input[name="name"], #name').fill(name);
+  await page.locator('input[name="email"], #email').fill(email);
+  await page.locator('textarea[name="review"], #review').fill(review);
+  await page.locator('#button-review, button#button-review').click();
+}
+
+export async function verifyReviewSubmitted(page) {
+  await expect(page.getByText(/thank you for your review\.?/i)).toBeVisible();
+}
