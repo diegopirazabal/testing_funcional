@@ -3,7 +3,10 @@ import { openTestCases, verifyTestCases } from './helpers/testCases.js';
 
 test('test-case-7 (Verify Test Cases Page)', async ({ page }) => {
   await page.goto('/');
+
   await expect(page.locator('body')).toBeVisible();
+
   await openTestCases(page);
+
   await verifyTestCases(page);
 });

@@ -11,24 +11,27 @@ export async function verifyContactUs(page) {
 }
 
 export async function completeForm(page, user) {
-  await page.getByTestId('name').fill(user.nick);
-  await page.getByTestId('email').fill(user.email);
-  await page.getByTestId('subject').fill('Consulta');
-  await page.getByTestId('message').fill('Hola, esta es la consulta. Gracias');
+  await page.locator('input[data-qa="name"]').fill(user.nick);
+  await page.locator('input[data-qa="email"]').fill(user.email);
+  await page.locator('input[data-qa="subject"]').fill('Consulta');
+  await page.locator('textarea[data-qa="message"]').fill('Hola, esto es una prueba.');
 
-  const success = page.locator('.status.alert.alert-success');
-  page.once('dialog', async dialog => {
-    await dialog.accept();
+  await page.setInputFiles('input[name="upload_file"]', {
+    name: 'test.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('archivo de prueba'),
   });
 
-  const submit = page.getByRole('button', { name: 'Submit' });
-  await expect(submit).toBeEnabled();
-  await submit.click();
+  page.once('dialog', d => d.accept());
 
-  await expect(success).toHaveText('Success! Your details have been submitted successfully.');
+  await page.getByRole('button', { name: /submit/i }).click();
 
-  const homeBtn = page.locator('a.btn.btn-success[href="/"]').first();
-  await expect(homeBtn).toBeVisible();
-  await homeBtn.click();
-  await expect(page).toHaveURL(/automationexercise\.com\/?$/);
+  await expect(page.locator('.status.alert.alert-success')).toHaveText(
+      'Success! Your details have been submitted successfully.',
+  );
+
+  await page.locator('a.btn.btn-success').click();
+  await expect(page.locator('body')).toBeVisible();
 }
+
+

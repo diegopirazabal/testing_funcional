@@ -113,11 +113,13 @@ export async function goToCart(page) {
 }
 
 export async function proceedToCheckout(page) {
-  const proceed = page
-    .locator(':is(a.btn.btn-default.check_out, button.check_out)')
-    .filter({ hasText: /Proceed\s*To\s*Checkout/i })
-    .first();
+  await expect(page).toHaveURL(/\/view_cart/, { timeout: 15000 });
 
-  await expect(proceed).toBeVisible();
-  await proceed.click();
+  const checkoutBtn = page.locator('a.btn.btn-default.check_out', { hasText: 'Proceed To Checkout' });
+  await checkoutBtn.waitFor({ state: 'visible', timeout: 15000 });
+
+  await checkoutBtn.scrollIntoViewIfNeeded();
+  await checkoutBtn.evaluate(b => b.click());
 }
+
+

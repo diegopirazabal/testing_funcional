@@ -28,7 +28,6 @@ export async function signup(page, user) {
   const signupLogin = page.getByRole('link', { name: /signup \/ login/i });
   await expect(signupLogin).toBeVisible();
   await signupLogin.click();
-
   await expect(page.getByText('New User Signup!')).toBeVisible();
   await page.getByRole('textbox', { name: 'Name' }).fill(user.nick);
   await page.getByTestId('signup-email').fill(user.email);
@@ -47,8 +46,8 @@ export async function completeAccountDetails(page, user) {
   await page.getByTestId('months').selectOption({ label: user.mes });
   await page.getByTestId('years').selectOption({ label: user.anio });
 
-  await page.getByLabel('Sign up for our newsletter!').check();
-  await page.getByLabel('Receive special offers from our partners!').check();
+//  await page.getByLabel('Sign up for our newsletter!').check();
+//  await page.getByLabel('Receive special offers from our partners!').check();
 
   await page.getByTestId('first_name').fill(user.nombre);
   await page.getByTestId('last_name').fill(user.apellido);

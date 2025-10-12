@@ -1,19 +1,19 @@
-import {test, expect} from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { verifyLoggedInAndDelete } from './helpers/account.js';
 import { addProductToCart } from './helpers/cart.js';
 import {
-  addCommentAndPlaceOrder,
-  fillPaymentAndConfirm,
-  registerOnCheckout,
-  verifyAddressAndOrderReview,
-  verifyOrderSuccess,
+    addCommentAndPlaceOrder,
+    fillPaymentAndConfirm,
+    registerOnCheckout,
+    verifyAddressAndOrderReview,
+    verifyOrderSuccess,
+    downloadInvoiceAndContinue,
 } from './helpers/checkout.js';
 
-test('test-case-14 (Register while checkout)', async ({page}) => {
-    test.setTimeout(60000);
+test('test-case-24 (Download Invoice after purchase order)', async ({ page }) => {
+    test.setTimeout(60_000);
 
     await page.goto('/');
-
     await expect(page.locator('body')).toBeVisible();
 
     await addProductToCart(page, 0, { goToCart: true });
@@ -22,17 +22,19 @@ test('test-case-14 (Register while checkout)', async ({page}) => {
 
     await verifyAddressAndOrderReview(page, user, false);
 
-    await addCommentAndPlaceOrder(page, 'este es el comentario de la compra');
+    await addCommentAndPlaceOrder(page, 'descargar factura tras la compra');
 
     await fillPaymentAndConfirm(page, {
         name: `${user.nombre} ${user.apellido}`,
         number: '4111111111111111',
         cvc: '123',
         exp_month: '11',
-        exp_year: '2999'
+        exp_year: '2999',
     });
 
     await verifyOrderSuccess(page);
+
+    await downloadInvoiceAndContinue(page);
 
     await verifyLoggedInAndDelete(page, user.nick);
 });

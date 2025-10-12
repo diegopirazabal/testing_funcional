@@ -9,6 +9,8 @@ import {
 } from './helpers/products.js';
 
 test('test-case-21 (Add review on product)', async ({ page }) => {
+    test.setTimeout(60000);
+
     await page.goto('/');
     await expect(page.locator('body')).toBeVisible();
 

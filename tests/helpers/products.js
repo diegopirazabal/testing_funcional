@@ -85,16 +85,24 @@ export async function verifySubscriptionInCart(page) {
 }
 
 export async function viewProductDetails(page) {
-  const card = page.locator('.features_items .product-image-wrapper').first();
-  await card.scrollIntoViewIfNeeded();
-  await expect(card).toBeVisible();
+  // asegura que los productos esten visibles
+  const firstCard = page.locator('.features_items .product-image-wrapper').first();
+  await firstCard.scrollIntoViewIfNeeded();
+  await expect(firstCard).toBeVisible({ timeout: 10000 });
 
-  const viewProduct = card.locator('a[href^="/product_details/"]');
-  await expect(viewProduct.first()).toBeVisible();
-  await viewProduct.first().click();
-  await expect(page).toHaveURL(/\/product_details\/\d+/);
-  await expect(page.locator('.product-information')).toBeVisible();
+  // click directo en el enlace del producto
+  const viewLink = firstCard.getByRole('link', { name: /view product/i });
+  await expect(viewLink).toBeVisible({ timeout: 5000 });
+
+  // evita overlay
+  await viewLink.evaluate(node => node.click());
+
+  await expect(page).toHaveURL(/\/product_details\/\d+/, { timeout: 15000 });
+  await expect(page.locator('.product-information')).toBeVisible({ timeout: 10000 });
 }
+
+
+
 
 export async function scrollToRecommended(page) {
   const rec = page.locator('a:has-text("Recommended items")').first();
