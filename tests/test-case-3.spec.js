@@ -1,10 +1,11 @@
 import {test, expect} from '@playwright/test';
 import {
-    completeAccountDetails,
-    generateUser, logout, signin, signup,
-    verifyAccountAndContinue, verifyError,
-    verifyLoggedInAndDelete, wrongSignIn
-} from "./helpers/user";
+  completeAccountDetails,
+  generateUser,
+  signup,
+  verifyAccountAndContinue,
+} from './helpers/account.js';
+import { logout, signin, verifyError, wrongSignIn } from './helpers/auth.js';
 
 test('test-case-3 (Login User with incorrect email and password)', async ({page}) => {
     await page.goto('/');

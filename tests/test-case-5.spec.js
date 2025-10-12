@@ -1,5 +1,12 @@
 import { test } from '@playwright/test';
-import { generateUser, signup, completeAccountDetails, verifyAccountAndContinue, logout, verifyEmailError } from './helpers/user.js';
+import {
+  generateUser,
+  signup,
+  completeAccountDetails,
+  verifyAccountAndContinue,
+  verifyEmailError,
+} from './helpers/account.js';
+import { logout } from './helpers/auth.js';
 
 test('test-case-5 (Register with existing email)', async ({ page }) => {
     await page.goto('/');

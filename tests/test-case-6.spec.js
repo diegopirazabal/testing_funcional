@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { generateUser, contactUs, verifyContactUs, completeForm } from './helpers/user.js';
+import { generateUser } from './helpers/account.js';
+import { contactUs, verifyContactUs, completeForm } from './helpers/contact.js';
 
 test('test-case-6 (Contact Us form)', async ({ page }) => {
     await page.goto('/');

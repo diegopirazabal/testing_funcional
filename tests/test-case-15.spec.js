@@ -1,10 +1,18 @@
 import {test, expect} from '@playwright/test';
 import {
-    addCommentAndPlaceOrder,
-    addProductToCart, completeAccountDetails, fillPaymentAndConfirm, generateUser, proceedToCheckout,
-    registerOnCheckout, signup, verifyAccountAndContinue,
-    verifyAddressAndOrderReview, verifyLoggedInAndDelete, verifyOrderSuccess
-} from "./helpers/user";
+  completeAccountDetails,
+  generateUser,
+  signup,
+  verifyAccountAndContinue,
+  verifyLoggedInAndDelete,
+} from './helpers/account.js';
+import { addProductToCart, proceedToCheckout } from './helpers/cart.js';
+import {
+  addCommentAndPlaceOrder,
+  fillPaymentAndConfirm,
+  verifyAddressAndOrderReview,
+  verifyOrderSuccess,
+} from './helpers/checkout.js';
 
 test('test-case-15 (Place Order: Register before Checkout)', async ({page}) => {
     page.context().on('page', p => p.close().catch(() => {}));

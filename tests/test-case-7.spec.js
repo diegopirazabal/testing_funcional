@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {openTestCases, verifyTestCases} from './helpers/user.js';
+import { openTestCases, verifyTestCases } from './helpers/testCases.js';
 
 test('test-case-7 (Verify Test Cases Page)', async ({ page }) => {
   await page.goto('/');

@@ -1,12 +1,13 @@
 import {test, expect} from '@playwright/test';
+import { verifyLoggedInAndDelete } from './helpers/account.js';
+import { addProductToCart } from './helpers/cart.js';
 import {
-    addCommentAndPlaceOrder,
-    addProductToCart,
-    fillPaymentAndConfirm,
-    registerOnCheckout,
-    verifyAddressAndOrderReview, verifyLoggedInAndDelete,
-    verifyOrderSuccess
-} from "./helpers/user";
+  addCommentAndPlaceOrder,
+  fillPaymentAndConfirm,
+  registerOnCheckout,
+  verifyAddressAndOrderReview,
+  verifyOrderSuccess,
+} from './helpers/checkout.js';
 
 test('test-case-14 (Register while checkout)', async ({page}) => {
     await page.goto('/');

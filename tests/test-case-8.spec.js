@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
 import {
-    openProducts,
-    verifyProductsList,
-    openFirstProductDetail,
-    verifyProductDetailPage
-} from './helpers/user.js';
+  openProducts,
+  verifyProductsList,
+  openFirstProductDetail,
+  verifyProductDetailPage,
+} from './helpers/products.js';
 
 test('test-case-8 (All Products + Product Detail)', async ({ page }) => {
     await page.goto('/');

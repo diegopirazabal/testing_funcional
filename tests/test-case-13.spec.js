@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
-import {addFourItems, verifyCartQuantity, viewProductDetails} from './helpers/user.js';
+import { addFourItems, verifyCartQuantity } from './helpers/cart.js';
+import { viewProductDetails } from './helpers/products.js';
 
 test('test-case-13 (View Product + qty 4 en Cart)', async ({ page }) => {
     await page.goto('/');

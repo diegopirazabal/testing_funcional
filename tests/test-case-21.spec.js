@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
-import {openProducts, verifyProductsList, openFirstProductDetail, verifyProductDetailPage, addProductReview, verifyReviewSubmitted
-} from './helpers/user';
+import {
+  openProducts,
+  verifyProductsList,
+  openFirstProductDetail,
+  verifyProductDetailPage,
+  addProductReview,
+  verifyReviewSubmitted,
+} from './helpers/products.js';
 
 test('test-case-21 (Add review on product)', async ({ page }) => {
     await page.goto('/');

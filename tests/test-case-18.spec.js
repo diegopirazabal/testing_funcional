@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {checkCategories} from "./helpers/user";
+import { checkCategories } from './helpers/categories.js';
 
 test('test-case-18 (View Category Products)', async ({page}) => {
     await page.goto('/');

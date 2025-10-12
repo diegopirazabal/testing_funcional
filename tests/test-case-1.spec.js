@@ -1,4 +1,10 @@
-import { generateUser, signup, completeAccountDetails, verifyAccountAndContinue, verifyLoggedInAndDelete } from './helpers/user.js';
+import {
+  generateUser,
+  signup,
+  completeAccountDetails,
+  verifyAccountAndContinue,
+  verifyLoggedInAndDelete,
+} from './helpers/account.js';
 import { test, expect } from '@playwright/test';
 test('test-case-1 (Register User)', async ({ page }) => {
   await page.goto('/');

@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {addProductToCart, verifyProducts} from "./helpers/user";
+import { addProductToCart, verifyProducts } from './helpers/cart.js';
 
 test('test-case-12 (Add products in cart=', async ({page}) => {
     await page.goto('/');
