@@ -15,7 +15,6 @@ import {
 } from './helpers/checkout.js';
 
 test('test-case-15 (Place Order: Register before Checkout)', async ({page}) => {
-    test.setTimeout(60000);
 
     page.context().on('page', p => p.close().catch(() => {}));
 

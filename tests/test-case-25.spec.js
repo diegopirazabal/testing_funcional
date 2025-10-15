@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test('test-case-25 (Scroll Up via Arrow & verify text)', async ({ page }) => {
-    test.setTimeout(60_000);
 
     await page.goto('/');
     await expect(page.locator('body')).toBeVisible();

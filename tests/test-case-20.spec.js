@@ -17,7 +17,7 @@ test('test-case-20 (Search Products and Verify Cart After Login)', async ({ page
     // logout antes del test principal
     await page.getByRole('link', { name: /logout/i }).click();
 
-    await page.getByRole('link', { name: /products/i }).click();
+    await page.getByRole('link', { name: /products/i }, {timeout: 30_000}).click();
     await expect(page).toHaveURL(/products/);
 
     await page.locator('#search_product').fill('dress');
@@ -31,7 +31,7 @@ test('test-case-20 (Search Products and Verify Cart After Login)', async ({ page
         await addBtns.nth(i).scrollIntoViewIfNeeded();
         await addBtns.nth(i).click({ force: true });
         const modal = page.locator('#cartModal');
-        await modal.waitFor({ state: 'visible' });
+        await modal.waitFor({ state: 'visible' }, {timeout: 120_000});
         await modal.getByRole('button', { name: /continue shopping/i }).evaluate(b => b.click());
         await modal.waitFor({ state: 'hidden' });
     }

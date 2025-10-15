@@ -11,7 +11,6 @@ import {
 } from './helpers/checkout.js';
 
 test('test-case-24 (Download Invoice after purchase order)', async ({ page }) => {
-    test.setTimeout(60_000);
 
     await page.goto('/');
     await expect(page.locator('body')).toBeVisible();

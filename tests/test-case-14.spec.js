@@ -10,7 +10,6 @@ import {
 } from './helpers/checkout.js';
 
 test('test-case-14 (Register while checkout)', async ({page}) => {
-    test.setTimeout(60000);
 
     await page.goto('/');
 

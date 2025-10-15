@@ -22,9 +22,9 @@ export async function completeForm(page, user) {
     buffer: Buffer.from('archivo de prueba'),
   });
 
-  page.once('dialog', d => d.accept());
+  page.once('dialog', d => d.accept(), {timeout: 30_000});
 
-  await page.getByRole('button', { name: /submit/i }).click();
+  await page.getByRole('button', { name: /submit/i },  {timeout: 30_000}).click();
 
   await expect(page.locator('.status.alert.alert-success')).toHaveText(
       'Success! Your details have been submitted successfully.',

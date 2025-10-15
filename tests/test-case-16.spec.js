@@ -16,7 +16,6 @@ import {
 import { signin, logout } from './helpers/auth';
 
 test('test-case-16 (Place Order: Login before Checkout)', async ({ page }) => {
-    test.setTimeout(60_000);
 
     await page.goto('/');
     await expect(page.locator('body')).toBeVisible();

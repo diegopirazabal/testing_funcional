@@ -1,7 +1,6 @@
 import {test, expect} from '@playwright/test';
 
 test('test-case-26 (Verify Scroll Up without \'Arrow\' button and Scroll Down functionality)', async ({page}) => {
-    test.setTimeout(60000);
 
     await page.goto('/');
     await expect(page.locator('body')).toBeVisible();
